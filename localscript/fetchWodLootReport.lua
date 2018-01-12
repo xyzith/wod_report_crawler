@@ -1,7 +1,9 @@
 #! /usr/bin/lua5.3
+local prefix = arg[0]:match('(.-)[^/]+$')
+package.path = prefix..'/?.lua;'..package.path
 
-local ClassList = require './ClassList'
 local GUMBO = require 'gumbo'
+local ClassList = require 'ClassList'
 local Telegram = require 'Telegram'
 
 function dump(table)
@@ -11,8 +13,11 @@ function dump(table)
 	end
 end
 
-local PHPSESSID = 'mvrtd9rc043vjrbchjx9m8wthpiu2bem'
-
+function getKey()
+	local handle = io.popen('redis-cli get wod:sessId')
+	local key = handle:read('*a')
+	return key:gsub('\n', '')
+end
 function fetchReportPage(sessId, repotId, postId)
 	local url = 'http://canto.world-of-dungeons.org/wod/spiel/dungeon/report.php?session_hero_id=141623&is_popup=1'
 	local handle = io.popen('curl -v --cookie "PHPSESSID='..sessId..'" -d "report_id[0]='..repotId..'&items[0]=获得物品&wod_post_id='..postId..'" -X POST '..url)
@@ -79,23 +84,36 @@ end
 function getTitle(document)
 	local title = document:getElementsByTagName('h2')[1]
 	if title then
-		return title.textContent
+		return title.textContent or ''
 	end
-	return 'Error: Can\'t fetch data.'
 end
 
 function getLootMessage(sessId)
-	local document = GUMBO.parse(fetchReportPage(sessId, getIds(sessId)))
+	local reportId, postId = getIds(sessId)
+	if not reportId or not postId then return nil end
+	local document = GUMBO.parse(fetchReportPage(sessId, reportId, postId))
 	local title = getTitle(document)
 	local loots = getUniqueLoot(document)
 	local msg = '=='..title..'=='
 	for i, loot in ipairs(loots) do
 		msg = msg..'\n[item: '..loot..']'
 	end
+	print(reportId, postId, sessId)
 	return msg
 end
 
+function run()
+	print(1)
+	local PHPSESSID = getKey()
+	print(2)
+	local msg = getLootMessage(PHPSESSID) 
+	print(3)
+	if msg then 
+		Telegram:msg('Dungeon_Master', msg)
+		--Telegram:msg('Secret_Avangers', msg)
+	else
+		print('Error: Can\'t fetch data.')
+	end
+end
 
-local msg = getLootMessage(PHPSESSID) 
-Telegram:msg('Dungeon_Master', msg)
---Telegram:msg('Secret_Avangers', msg)
+run()
