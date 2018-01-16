@@ -6,16 +6,22 @@ package.path = prefix..'/?.lua;'..package.path
 local GUMBO = require 'gumbo'
 local ClassList = require 'ClassList'
 local Telegram = require 'Telegram'
---[[
+
 function getKey()
 	local handle = io.popen('redis-cli get wod:sessId')
 	local key = handle:read('*a')
 	return key:gsub('\n', '')
 end
 
-function fetchReportPage(sessId, repotId, postId)
+function getLoginKey()
+	local handle = io.popen('redis-cli get wod:login_CC')
+	local key = handle:read('*a')
+	return key:gsub('\n', '')
+end
+
+function fetchReportPage(sessId, login_CC, repotId, postId)
 	local url = 'http://canto.world-of-dungeons.org/wod/spiel/dungeon/report.php?session_hero_id=141623&is_popup=1'
-	local handle = io.popen('curl -v --cookie "PHPSESSID='..sessId..'" -d "report_id[0]='..repotId..'&items[0]=获得物品&wod_post_id='..postId..'" -X POST '..url)
+	local handle = io.popen('curl -v --cookie "PHPSESSID='..sessId..';login_CC'..login_CC..'" -d "report_id[0]='..repotId..'&items[0]=获得物品&wod_post_id='..postId..'" -X POST '..url)
 	local html = handle:read('*a')
 	handle:close()
 	return html
@@ -99,7 +105,8 @@ end
 
 function run()
 	local PHPSESSID = getKey()
-	local msg = getLootMessage(PHPSESSID) 
+	local login_CC = getLoginKey()
+	local msg = getLootMessage(PHPSESSID, login_CC) 
 	if msg then 
 		Telegram:msg('Dungeon_Master', msg)
 		--Telegram:msg('Secret_Avangers', msg)
@@ -109,4 +116,3 @@ function run()
 end
 
 run()
-]]--

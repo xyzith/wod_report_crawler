@@ -1,26 +1,9 @@
 local Handler = {}
 
+
 Handler.__index = Handler
 
-function Handler:setSessId(id)
-	self:set('wod:sessId', id)
-end
-
-function Handler:getSessId()
-	local value, err = self:get('wod:sessId')
-	return value
-end
-
-function Handler:getTime(id)
-	local value, err = self:get('wod:time')
-	return value
-end
-
-function Handler:setTimer(time)
-	self:set('wod:timer', id)
-end
-
-local redis = setmetatable(require "resty.redis", Handler)
+local redis = require 'resty.redis'
 local M = {}
 
 function M.run()
@@ -37,10 +20,13 @@ function M.run()
 	end
 	local sessId = ngx.var.arg_key
 	local time = ngx.var.arg_time
-	red:setSessId(sessId)
-	ngx.say(red:getSessId())
-	ngx.say(time)
-	os.execute('lua5.3 /home/taylor/tool/wod_report_crawler/localscript/fetchWodLootReport.lua >> /home/taylor/tool/wod_report_crawler/debug.log')
+	local login_CC = ngx.var.arg_login_CC
+	red:set('wod:sessId', sessId)
+	red:set('wod:time', time)
+	red:set('wod:login_CC', login_CC)
+	ngx.say(red:get('wod:sessId'))
+	ngx.say(red:get('wod:time'))
+	ngx.say(red:get('wod:login_CC'))
 	ngx.exit(200)
 	return
 end

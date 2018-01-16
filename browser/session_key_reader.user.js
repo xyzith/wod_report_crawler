@@ -38,13 +38,14 @@ function getTimmer() {
 	if (date.valueOf() < current) {
 		date.setTime(date.valueOf() + 86400000);
 	}
-	return (date.valueOf() - current) / 1000 + 300 ;
+	return Math.floor(date.valueOf() / 1000) + 300;
 }
 
 const cookies = readCookie();
 const time = getTimmer();
 const key = cookies.PHPSESSID
-if (time && key) {
-	xhr(`http://localhost/lua/wodreport.lua?key=${key}&time=${time}`)
+const login_CC = cookies.login_CC
+if (time || key || login_CC) {
+	xhr(`http://localhost/lua/wodreport.lua?key=${key}&login_CC=${login_CC}&time=${time || 0}`)
 }
 
