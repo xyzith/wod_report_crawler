@@ -39,7 +39,7 @@ end
 
 function ClassList:new(str)
 	local new = setmetatable({}, self)
-	new.str = str
+	new.str = str or ''
 	return new
 end
 

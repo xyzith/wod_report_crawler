@@ -2,7 +2,6 @@
 
 local redis = require "resty.redis"
 
-_G.wod = {}
 
 function checkReport()
 	local red = redis.new()
@@ -15,10 +14,16 @@ function checkReport()
 	else 
 		ngx.log(ngx.ERR, 'wait timer')
 	end
-	ngx.timer.at(60, checkReport)
+	createTimer()
 end
 
-
+function createTimer()
+	local ok, err = ngx.timer.at(300, checkReport)
+	if not ok then
+		ngx.log(ngx.ERR, 'failed to create timer ', err)
+		return
+	end
+end
 if 0 == ngx.worker.id() then
-	ngx.timer.at(60, checkReport)
+	createTimer()
 end

@@ -22,7 +22,9 @@ function M.run()
 	local time = ngx.var.arg_time
 	local login_CC = ngx.var.arg_login_CC
 	red:set('wod:sessId', sessId)
-	red:set('wod:time', time)
+	if time and tonumber(time) > 0 then
+		red:set('wod:time', time)
+	end
 	red:set('wod:login_CC', login_CC)
 	ngx.say(red:get('wod:sessId'))
 	ngx.say(red:get('wod:time'))
