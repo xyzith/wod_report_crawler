@@ -28,10 +28,10 @@ function getTimmer() {
     const date = new Date();
     const current = date.valueOf();
     const button = document.querySelector('input.button_disabled');
-    if (!button) { return 0 }
+    if (!button) { return 0; }
 
     const time = button.value.match(/\d+:\d+$/);
-    if (!time) { return 0 }
+    if (!time) { return 0; }
     const [hour, minute] = time[0].split(':');
     date.setHours(hour);
     date.setMinutes(minute);
@@ -43,8 +43,8 @@ function getTimmer() {
 
 const cookies = readCookie();
 const time = getTimmer();
-const key = cookies.PHPSESSID
-const login_CC = cookies.login_CC
+const key = cookies.PHPSESSID;
+const login_CC = cookies.login_CC;
 if (time || key || login_CC) {
     xhr(`http://localhost/lua/wodreport.lua?key=${key}&login_CC=${login_CC}&time=${time || 0}`)
 }
