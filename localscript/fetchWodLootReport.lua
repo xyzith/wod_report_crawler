@@ -40,7 +40,9 @@ function getUniqueLoot(document)
 			for i, loot in ipairs(loots:getElementsByTagName('a')) do
 				local classList = ClassList:new(loot:getAttribute('class'))
 				if classList:contains('item_unique') then
-					unique_loots:insert(loot.textContent);
+					local res = setmetatable({}, { __index = table }) 
+					local href = loot:getAttribute('href')
+					unique_loots:insert({ loot.textContent, href:gsub('http://', 'http://canto.') })
 				end
 			end
 		end
@@ -96,9 +98,10 @@ function getLootMessage(sessId, login_CC)
 	local document = GUMBO.parse(fetchReportPage(sessId, login_CC, reportId, postId))
 	local title = getTitle(document)
 	local loots = getUniqueLoot(document)
-	local msg = '=='..title..'=='
+	local msg = '<b>=='..title..'==</b>'
 	for i, loot in ipairs(loots) do
-		msg = msg..'\n[item: '..loot..']'
+		local text, href = table.unpack(loot)
+		msg = msg..'\n[item: <a href="'..href..'">'..text..'</a>]'
 	end
 	return msg
 end
