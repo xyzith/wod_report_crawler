@@ -9,12 +9,16 @@ function checkReport()
 	local nextReportTime, err = red:get('wod:time')
 	local currentTime = os.time()
 	if nextReportTime ~= ngx.null and tonumber(nextReportTime) < os.time() then
-		red:del('wod:time')
-		os.execute('lua5.3 /home/taylor/tool/wod_report_crawler/localscript/fetchWodLootReport.lua >> /home/taylor/tool/wod_report_crawler/debug.log')
+		red:set('wod:time', getNextTime())
+		os.execute('lua5.3 /home/lain/app/wod_report_crawler/localscript/fetchWodLootReport.lua')
 	else 
 		ngx.log(ngx.ERR, 'wait timer')
 	end
 	createTimer()
+end
+
+function getNextTime()
+	return os.time() + 7 * 60 * 60
 end
 
 function createTimer()

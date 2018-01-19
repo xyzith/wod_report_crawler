@@ -5,7 +5,7 @@ package.path = prefix..'/?.lua;'..package.path
 
 local GUMBO = require 'gumbo'
 local ClassList = require 'ClassList'
-local Telegram = require 'Telegram'
+local bot = require 'telegram_reporter_bot'
 
 function getKey()
 	local handle = io.popen('redis-cli get wod:sessId')
@@ -106,11 +106,12 @@ end
 function run()
 	local PHPSESSID = getKey()
 	local login_CC = getLoginKey()
-	print('keys', PHPSESSID, login_CC)
 	local msg = getLootMessage(PHPSESSID, login_CC) 
 	if msg then 
-		--Telegram:msg('Dungeon_Master', msg)
-		Telegram:msg('Secret_Avangers', msg)
+		local ok = bot:init()
+		if ok then
+			bot:send(msg)
+		end
 	else
 		print('Error: Can\'t fetch data.')
 	end
