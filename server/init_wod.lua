@@ -18,7 +18,7 @@ function checkReport()
 end
 
 function getNextTime()
-	return os.time() + 7 * 60 * 60
+	return os.time() + 7 * 60 * 60 + 300
 end
 
 function createTimer()
