@@ -4,7 +4,7 @@
 // @updateURL       https://github.com/xyzith/wod_report_crawler/raw/master/browser/session_key_reader.user.js
 // @grant           none
 // @author          Taylor Tang
-// @version         1.3
+// @version         1.31
 // @description     Read session key for. DO NOT install this script if you don't know what it's for.
 // @include         *://*.world-of-dungeons.org/*
 // ==/UserScript==
@@ -26,9 +26,9 @@ function readCookie() {
 }
 function getTimmer() {
     // if server time != local pc time
-    const hourOffset = 1; 
+    const hourOffset = 1;
     const current = new Date();
-    const next = new Date(current + timeOffset)
+    const next = new Date(current + hourOffset);
     const button = document.querySelector('input.button_disabled');
     if (!button) { return 0; }
 
