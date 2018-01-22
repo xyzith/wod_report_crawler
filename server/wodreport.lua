@@ -26,9 +26,9 @@ function M.run()
 		red:set('wod:time', time)
 	end
 	red:set('wod:login_CC', login_CC)
-	ngx.say(red:get('wod:sessId'))
 	ngx.say(red:get('wod:time'))
-	ngx.say(red:get('wod:login_CC'))
+--	ngx.say(red:get('wod:sessId'))
+--	ngx.say(red:get('wod:login_CC'))
 	ngx.exit(200)
 	return
 end
