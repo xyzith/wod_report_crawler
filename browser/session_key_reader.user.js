@@ -4,7 +4,7 @@
 // @updateURL       https://github.com/xyzith/wod_report_crawler/raw/master/browser/session_key_reader.user.js
 // @grant           none
 // @author          Taylor Tang
-// @version         1.31
+// @version         1.32
 // @description     Read session key for. DO NOT install this script if you don't know what it's for.
 // @include         *://*.world-of-dungeons.org/*
 // ==/UserScript==
@@ -40,7 +40,7 @@ function getTimmer() {
     if (next.valueOf() < current.valueOf()) {
         next.setTime(next.valueOf() + 86400000);
     }
-    return Math.floor(next.valueOf() / 1000) + 300;
+    return Math.floor(next.valueOf() / 1000) + 90;
 }
 
 const cookies = readCookie();
