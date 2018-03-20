@@ -4,7 +4,7 @@
 // @updateURL       https://github.com/xyzith/wod_report_crawler/raw/master/browser/session_key_reader.user.js
 // @grant           none
 // @author          Taylor Tang
-// @version         1.32
+// @version         1.33
 // @description     Read session key for. DO NOT install this script if you don't know what it's for.
 // @include         *://*.world-of-dungeons.org/*
 // ==/UserScript==
@@ -37,7 +37,7 @@ function getTimmer() {
     const [hour, minute] = time[0].split(':').map((n) => parseInt(n));
     next.setHours(hour + hourOffset);
     next.setMinutes(minute);
-    if (next.valueOf() < current.valueOf()) {
+    if (current - next < 12 * 60 * 60 * 1000 ) {
         next.setTime(next.valueOf() + 86400000);
     }
     return Math.floor(next.valueOf() / 1000) + 90;
